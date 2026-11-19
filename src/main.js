@@ -26,42 +26,64 @@ strip.innerHTML = reel
   )
   .join('');
 
-function centerStrip() {
-  const hero = strip.querySelector('.is-hero');
-  const off = window.innerWidth / 2 - (hero.offsetLeft + hero.offsetWidth / 2);
-  strip.style.setProperty('--x', `${off}px`);
-}
-centerStrip();
-addEventListener('resize', centerStrip);
+const frameEls = [...strip.querySelectorAll('.strip__frame')];
+const firstEl = frameEls[3];
+const lastEl = frameEls[3 + frames.length - 1];
+const hero = $('.hero');
+let startX = 0;
+let dist = 0;
+let progress = 0;
+const SPEED = 1.7; // quantos pixels o filme anda para cada pixel rolado
 
-// Momento de abertura: o rolo avança e para no quadro do fiorde.
+// O topo fica preso na tela enquanto o filme passa. Cada pixel rolado
+// avança o filme; quando acaba o último quadro, a página volta a rolar.
+function layout() {
+  const center = (el) => el.offsetLeft + el.offsetWidth / 2;
+  startX = innerWidth / 2 - center(firstEl);
+  dist = reduced ? 0 : center(lastEl) - center(firstEl);
+  hero.style.height = `calc(100svh + ${Math.round(dist / SPEED)}px)`;
+  render();
+}
+
+function render() {
+  const x = startX - progress * dist;
+  strip.style.setProperty('--x', `${x}px`);
+  // o quadro no centro acende; os vizinhos ficam no escuro do negativo
+  const mid = innerWidth / 2;
+  for (const el of frameEls) {
+    const c = x + el.offsetLeft + el.offsetWidth / 2;
+    const lit = Math.max(0, 1 - Math.abs(c - mid) / el.offsetWidth);
+    el.style.setProperty('--lit', lit.toFixed(3));
+  }
+}
+
+let pending = false;
+function onScroll() {
+  if (pending) return;
+  pending = true;
+  requestAnimationFrame(() => {
+    pending = false;
+    progress = dist ? Math.min(1, Math.max(0, (scrollY * SPEED) / dist)) : 0;
+    document.documentElement.classList.add('is-scrolling');
+    render();
+  });
+}
+
+layout();
+addEventListener('resize', layout);
+addEventListener('scroll', onScroll, { passive: true });
+document.fonts?.ready.then(layout);
+
+// Momento de abertura: o rolo entra pela direita e para no primeiro quadro.
 const start = () => requestAnimationFrame(() => document.documentElement.classList.add('is-ready'));
 if (reduced) start();
 else Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 900))]).then(start);
-
-// Rolagem: a faixa desliza devagar, como filme avançando na mão.
-if (!reduced) {
-  let pending = false;
-  addEventListener(
-    'scroll',
-    () => {
-      if (pending) return;
-      pending = true;
-      requestAnimationFrame(() => {
-        pending = false;
-        const y = Math.min(scrollY, innerHeight * 1.2);
-        strip.style.setProperty('--drift', `${-y * 0.35}px`);
-      });
-    },
-    { passive: true },
-  );
-}
 
 // A barra do topo troca de cor quando sai do negativo e entra no papel.
 const top = $('.top');
 new IntersectionObserver(([e]) => top.classList.toggle('is-light', !e.isIntersecting), {
   rootMargin: `-${top.offsetHeight}px 0px 0px 0px`,
-}).observe($('.hero'));
+}).observe($('.hero__text'));
 
 /* ---------- Folha de contato ---------- */
 
@@ -71,32 +93,14 @@ sheet.innerHTML = frames
     (f, i) => `
     <li class="frame${f.pick ? ' frame--pick' : ''}">
       <button class="frame__btn" data-i="${i}" aria-label="Abrir ${f.place}">
+        <span class="film__edge film__edge--top" aria-hidden="true"><span>TC 400</span><span>${i + 1}</span></span>
         <img src="${small(f.id)}" alt="${f.place}" width="720" height="480" loading="lazy" decoding="async" />
-        ${
-          f.pick
-            ? `<svg class="frame__circle" viewBox="0 0 100 70" preserveAspectRatio="none" aria-hidden="true">
-                 <path pathLength="1" d="M52 4C24 3 4 15 5 35s22 31 46 31 45-11 44-31S73 4 44 7" />
-               </svg>`
-            : ''
-        }
+        <span class="film__edge film__edge--bottom" aria-hidden="true"><span>${num(i)}</span>${f.pick ? '<span class="film__pick">✕ imprimir</span>' : ''}</span>
       </button>
       <span class="frame__meta"><span class="mono">${num(i)}</span> ${f.place}${f.pick ? ' <em>escolhida</em>' : ''}</span>
     </li>`,
   )
   .join('');
-
-// Os círculos são "desenhados" com lápis quando a folha entra na tela.
-const io = new IntersectionObserver(
-  (entries) =>
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add('is-drawn');
-        io.unobserve(e.target);
-      }
-    }),
-  { threshold: 0.6 },
-);
-sheet.querySelectorAll('.frame--pick').forEach((el) => io.observe(el));
 
 /* ---------- Lupa (só com mouse) ---------- */
 
