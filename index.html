@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tomé Caldas · Fotografia de viagem e paisagem</title>
+    <meta name="description" content="Fotografia de viagem e paisagem: expedições fotográficas, retratos em viagem e editoriais para turismo. Site de demonstração." />
+    <meta name="theme-color" content="#1b1a18" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b1a18'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23d2321e' stroke-width='3'/%3E%3C/svg%3E" />
+    <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href="/img/1015.webp" />
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="top">
+      <a class="top__mark" href="#topo">Tomé Caldas</a>
+      <nav class="top__nav" aria-label="Seções">
+        <a href="#folha">Fotos</a>
+        <a href="#trabalhos">Trabalhos</a>
+        <a href="#como">Como funciona</a>
+        <a href="#contato" class="top__cta">Marcar uma conversa</a>
+      </nav>
+    </header>
+
+    <main id="conteudo">
+      <section class="hero" id="topo" aria-labelledby="hero-title">
+        <div class="strip" aria-hidden="true">
+          <div class="strip__track" id="strip"></div>
+        </div>
+        <div class="hero__text">
+          <h1 id="hero-title" class="hero__name">Tomé Caldas</h1>
+          <p class="hero__lead">
+            Fotografia de viagem e paisagem. Gente pequena em lugares grandes, e a paciência de esperar a luz certa.
+          </p>
+        </div>
+      </section>
+
+      <section class="sheet" id="folha" aria-labelledby="sheet-title">
+        <div class="sheet__head">
+          <h2 id="sheet-title" class="h2">Folha de contato</h2>
+          <p class="sheet__intro">
+            Os quadros circulados em vermelho são os que eu escolheria imprimir. Passe a lupa por cima ou abra qualquer
+            um para ver inteiro.
+          </p>
+        </div>
+        <ol class="sheet__grid" id="sheet"></ol>
+      </section>
+
+      <section class="offers" id="trabalhos" aria-labelledby="offers-title">
+        <h2 id="offers-title" class="h2">Trabalhos</h2>
+        <div class="offers__list" id="offers"></div>
+      </section>
+
+      <section class="about" aria-labelledby="about-title">
+        <h2 id="about-title" class="about__quote">
+          Eu chego cedo, fico até tarde e passo a maior parte do tempo esperando. A foto é o que sobra dessa espera.
+        </h2>
+        <div class="about__text">
+          <p>
+            Fotografo estrada, montanha, mar e as pessoas que atravessam esses lugares. Trabalho com pouca luz
+            artificial e quase nenhuma pose: prefiro entender o lugar antes de apontar a câmera.
+          </p>
+          <p>
+            Entre uma viagem e outra, faço editoriais para pousadas e marcas que querem mostrar o lugar como ele é, e
+            não como um folheto.
+          </p>
+        </div>
+      </section>
+
+      <section class="steps" id="como" aria-labelledby="steps-title">
+        <h2 id="steps-title" class="h2">Como funciona</h2>
+        <ol class="steps__list" id="steps"></ol>
+      </section>
+
+      <section class="contact" id="contato" aria-labelledby="contact-title">
+        <div class="contact__side">
+          <h2 id="contact-title" class="h2">Me conta a viagem</h2>
+          <p>
+            Preencha o que já souber. Eu monto a mensagem para você conferir antes de mandar pelo WhatsApp.
+          </p>
+        </div>
+        <form class="form" id="form" novalidate>
+          <label class="field">
+            <span>Seu nome</span>
+            <input name="nome" autocomplete="name" required />
+          </label>
+          <fieldset class="field field--chips">
+            <legend>O que você procura</legend>
+            <label><input type="radio" name="tipo" value="uma expedição fotográfica" checked /><span>Expedição</span></label>
+            <label><input type="radio" name="tipo" value="um retrato em viagem" /><span>Retrato em viagem</span></label>
+            <label><input type="radio" name="tipo" value="um editorial para turismo" /><span>Editorial</span></label>
+          </fieldset>
+          <label class="field">
+            <span>Para onde</span>
+            <input name="lugar" placeholder="Ex.: Serra da Mantiqueira" />
+          </label>
+          <label class="field">
+            <span>Quando</span>
+            <input name="quando" placeholder="Mês ou data aproximada" />
+          </label>
+          <label class="field field--wide">
+            <span>Algo mais</span>
+            <textarea name="obs" rows="3" placeholder="Quantas pessoas, ideias, referências…"></textarea>
+          </label>
+          <div class="form__preview field--wide">
+            <span class="form__label">Mensagem</span>
+            <p id="preview" aria-live="polite"></p>
+          </div>
+          <p class="form__error field--wide" id="form-error" role="alert"></p>
+          <button class="btn field--wide" type="submit">Abrir no WhatsApp</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p class="foot__mark">Tomé Caldas</p>
+      <p class="foot__note">
+        Site de demonstração: o fotógrafo e a marca são fictícios. Fotos do Unsplash por <span id="credits"></span>.
+      </p>
+    </footer>
+
+    <div class="lens" id="lens" aria-hidden="true"></div>
+
+    <dialog class="viewer" id="viewer" aria-label="Foto ampliada">
+      <figure class="viewer__fig">
+        <img id="viewer-img" alt="" />
+        <figcaption>
+          <span class="mono" id="viewer-num"></span>
+          <span id="viewer-place"></span>
+          <span class="viewer__credit" id="viewer-credit"></span>
+        </figcaption>
+      </figure>
+      <button class="viewer__btn viewer__prev" id="prev" aria-label="Foto anterior">‹</button>
+      <button class="viewer__btn viewer__next" id="next" aria-label="Próxima foto">›</button>
+      <button class="viewer__close" id="close" aria-label="Fechar">Fechar</button>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
